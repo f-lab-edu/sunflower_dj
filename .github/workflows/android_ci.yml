@@ -36,7 +36,7 @@ jobs:
 
       # 3. 테스트 실패 시 리포트 업로드 (어디가 틀렸는지 확인용)
       - name: Upload Test Report
-#        if: failure() # 테스트가 실패했을 때만 실행 (확인을 위해 주석 처리)
+        if: failure() # 테스트가 실패했을 때만 실행
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
