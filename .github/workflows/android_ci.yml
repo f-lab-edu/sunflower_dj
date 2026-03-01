@@ -1,0 +1,55 @@
+name: Sunflower CI/CD
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 1. ktlint로 코드 스타일 검사
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck
+
+      # 2. Robolectric을 포함한 단위 테스트 실행
+      # Robolectric의 원활한 실행을 위해 메모리 할당량을 명시합니다.
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest --info
+
+
+      # 3. 테스트 실패 시 리포트 업로드 (어디가 틀렸는지 확인용)
+      - name: Upload Test Report
+        if: failure() # 테스트가 실패했을 때만 실행
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: app/build/reports/tests/testDebugUnitTest/
+
+      # 4. CD: 설치 가능한 APK 빌드
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      # 5. CD: 빌드된 APK를 GitHub Artifact로 업로드
+      - name: Upload APK Artifact
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sunflower-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
