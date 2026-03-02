@@ -8,7 +8,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.common.base.BaseActivity
+import com.djyoo.sunflower.common.screen.main.vm.MainUiState
 import com.djyoo.sunflower.common.screen.main.vm.MainViewModel
+import com.djyoo.sunflower.common.screen.main.vm.TabUiState
 import com.djyoo.sunflower.databinding.ActivityMainBinding
 import com.djyoo.sunflower.databinding.ItemMainPagerBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,10 +29,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
             val tabView = ItemMainPagerBinding.inflate(layoutInflater)
-            val item = MainTab.all[position]
+            val item = MainTabItem.all[position]
 
-            tabView.tvTitle.text = item.title
-            tabView.ivIcon.setImageResource(item.iconRes)
+            tabView.tabTitle.text = getString(item.titleResId)
+            tabView.tabIcon.setImageResource(item.iconRes)
 
             tab.customView = tabView.root
         }.attach()
@@ -38,7 +40,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         mBinding.viewPager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    mVmMain.selectTab(position)
+                    mVmMain.onTabSelected(MainTabItem.all[position])
                 }
             },
         )
@@ -48,8 +50,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mVmMain.uiState.collect { state ->
-                    renderTabs(state.selectedTabIndex)
-                    renderFilter(state.showFilter)
+                    applyTabState(state)
+                    applyFilterState(state)
 
                     if (mBinding.viewPager.currentItem != state.selectedTabIndex) {
                         mBinding.viewPager.setCurrentItem(state.selectedTabIndex, false)
@@ -59,28 +61,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
     }
 
-    private fun renderTabs(selectedIndex: Int) {
-        MainTab.all.forEachIndexed { index, tab ->
+    private fun applyTabState(state: MainUiState) {
+        state.tabs.forEachIndexed { index, tabUi: TabUiState ->
 
             val tabLayoutTab = mBinding.tabLayout.getTabAt(index) ?: return@forEachIndexed
             val view = tabLayoutTab.customView ?: return@forEachIndexed
             val tabBinding = ItemMainPagerBinding.bind(view)
 
-            tabBinding.tvTitle.text = tab.title
-            tabBinding.ivIcon.setImageResource(tab.iconRes)
+            tabBinding.tabTitle.text = getString(tabUi.titleResId)
+            tabBinding.tabIcon.setImageResource(tabUi.iconRes)
 
-            val color = if (index == selectedIndex) {
+            val color = if (tabUi.isSelected) {
                 getColor(R.color.color_4caf50)
             } else {
                 getColor(R.color.color_4c4c4c)
             }
 
-            tabBinding.ivIcon.setColorFilter(color)
-            tabBinding.tvTitle.setTextColor(color)
+            tabBinding.tabIcon.setColorFilter(color)
+            tabBinding.tabTitle.setTextColor(color)
         }
     }
 
-    private fun renderFilter(isShow: Boolean) {
-        mBinding.ivFilter.isVisible = isShow
+    private fun applyFilterState(state: MainUiState) {
+        mBinding.ivFilter.isVisible = state.isFilterVisible
     }
 }

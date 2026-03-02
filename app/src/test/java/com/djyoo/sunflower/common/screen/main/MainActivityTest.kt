@@ -29,8 +29,8 @@ class MainActivityTest {
         for (i in 0 until tabCount) {
             val tab = getTabAt(i) ?: continue
             val view = tab.customView ?: continue
-            val tvTitle = view.findViewById<TextView>(R.id.tvTitle) ?: continue
-            if (tvTitle.text.toString() == title) {
+            val titleTextView = view.findViewById<TextView>(R.id.tabTitle) ?: continue
+            if (titleTextView.text.toString() == title) {
                 return tab
             }
         }
@@ -57,8 +57,11 @@ class MainActivityTest {
         val activity = launchActivity()
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
 
-        val myGardenTab = requireNotNull(tabLayout.findTabByTitle("My Garden"))
-        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
+        val myGardenTitle = activity.getString(R.string.title_my_garden)
+        val plantListTitle = activity.getString(R.string.title_plant_list)
+
+        val myGardenTab = requireNotNull(tabLayout.findTabByTitle(myGardenTitle))
+        val plantTab = requireNotNull(tabLayout.findTabByTitle(plantListTitle))
 
         // 초기에는 My Garden 탭이 선택되어 있고, Plant 탭은 선택되지 않아야 한다.
         assertTrue(myGardenTab.isSelected)
@@ -72,7 +75,8 @@ class MainActivityTest {
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
         val ivFilter = activity.findViewById<ImageView>(R.id.iv_filter)
 
-        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
+        val plantListTitle = activity.getString(R.string.title_plant_list)
+        val plantTab = requireNotNull(tabLayout.findTabByTitle(plantListTitle))
 
         // My Garden 이 선택된 초기 상태에서 Plant 탭을 탭 (텍스트를 기준으로 찾되, 실제 클릭은 탭 전체에 수행)
         tabLayout.performClickOnTab(plantTab)
@@ -93,7 +97,8 @@ class MainActivityTest {
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
         val ivFilter = activity.findViewById<ImageView>(R.id.iv_filter)
 
-        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
+        val plantListTitle = activity.getString(R.string.title_plant_list)
+        val plantTab = requireNotNull(tabLayout.findTabByTitle(plantListTitle))
 
         // 먼저 Plant 탭을 선택
         tabLayout.performClickOnTab(plantTab)
@@ -118,8 +123,11 @@ class MainActivityTest {
         val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
 
-        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
-        val myGardenTab = requireNotNull(tabLayout.findTabByTitle("My Garden"))
+        val myGardenTitle = activity.getString(R.string.title_my_garden)
+        val plantListTitle = activity.getString(R.string.title_plant_list)
+
+        val plantTab = requireNotNull(tabLayout.findTabByTitle(plantListTitle))
+        val myGardenTab = requireNotNull(tabLayout.findTabByTitle(myGardenTitle))
 
         // 먼저 Plant 탭을 선택
         tabLayout.performClickOnTab(plantTab)
