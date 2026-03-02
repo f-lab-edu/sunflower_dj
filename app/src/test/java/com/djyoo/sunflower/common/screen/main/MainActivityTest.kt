@@ -1,7 +1,9 @@
 package com.djyoo.sunflower.common.screen.main
 
 import android.os.Looper
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.djyoo.sunflower.R
 import com.google.android.material.tabs.TabLayout
@@ -23,44 +25,114 @@ class MainActivityTest {
         return controller.get()
     }
 
+    private fun TabLayout.findTabByTitle(title: String): TabLayout.Tab? {
+        for (i in 0 until tabCount) {
+            val tab = getTabAt(i) ?: continue
+            val view = tab.customView ?: continue
+            val tvTitle = view.findViewById<TextView>(R.id.tvTitle) ?: continue
+            if (tvTitle.text.toString() == title) {
+                return tab
+            }
+        }
+        return null
+    }
+
+    private fun TabLayout.performClickOnTab(tab: TabLayout.Tab) {
+        val tabStrip = getChildAt(0) as ViewGroup
+        var index = -1
+        for (i in 0 until tabCount) {
+            if (getTabAt(i) == tab) {
+                index = i
+                break
+            }
+        }
+        require(index >= 0) { "Tab not attached to this TabLayout" }
+
+        val tabView = tabStrip.getChildAt(index)
+        tabView.performClick()
+    }
+
     @Test
-    fun clickingTabs_movesToCorrectPage() {
+    fun mainActivityStarts_withMyGardenTabSelected() {
+        val activity = launchActivity()
+        val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
+
+        val myGardenTab = requireNotNull(tabLayout.findTabByTitle("My Garden"))
+        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
+
+        // 초기에는 My Garden 탭이 선택되어 있고, Plant 탭은 선택되지 않아야 한다.
+        assertTrue(myGardenTab.isSelected)
+        assertTrue(!plantTab.isSelected)
+    }
+
+    @Test
+    fun whenMyGardenSelected_tappingPlantText_selectsPlantTab() {
         val activity = launchActivity()
         val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
         val ivFilter = activity.findViewById<ImageView>(R.id.iv_filter)
 
-        // 초기 탭 / 페이지는 0번(My Garden)이어야 한다.
-        assertEquals(0, viewPager.currentItem)
+        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
 
-        // 두 번째 탭(Plant list)을 선택하면 ViewPager의 페이지도 1번으로 변경되어야 한다.
-        val secondTab = tabLayout.getTabAt(1)
-        requireNotNull(secondTab)
-
-        secondTab.select()
+        // My Garden 이 선택된 초기 상태에서 Plant 탭을 탭 (텍스트를 기준으로 찾되, 실제 클릭은 탭 전체에 수행)
+        tabLayout.performClickOnTab(plantTab)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
+        // Plant 탭이 선택되고 ViewPager 페이지도 변경되어야 한다.
         assertEquals(1, viewPager.currentItem)
         // Plant 탭에서는 필터 아이콘이 보여야 한다.
         assertEquals(ViewPager2.SCROLL_STATE_IDLE, viewPager.scrollState)
         assertEquals(true, ivFilter.visibility == ImageView.VISIBLE)
+        assertTrue(plantTab.isSelected)
     }
 
     @Test
-    fun swipingPages_updatesSelectedTab() {
+    fun whenPlantSelected_tappingPlantTextAgain_doesNothing() {
         val activity = launchActivity()
         val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
         val ivFilter = activity.findViewById<ImageView>(R.id.iv_filter)
 
-        // ViewPager에서 두 번째 페이지로 스와이프(프로그램matically 설정)
-        viewPager.setCurrentItem(1, false)
+        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
+
+        // 먼저 Plant 탭을 선택
+        tabLayout.performClickOnTab(plantTab)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // TabLayout의 선택된 탭도 두 번째 탭이어야 한다.
-        assertEquals(1, tabLayout.selectedTabPosition)
-        // Plant 탭에서는 필터 아이콘이 보여야 한다.
-        assertTrue(ivFilter.visibility == ImageView.VISIBLE)
+        val beforeCurrentItem = viewPager.currentItem
+        val beforeFilterVisible = ivFilter.visibility == ImageView.VISIBLE
+
+        // 이미 Plant 가 선택된 상태에서 Plant 탭을 다시 탭
+        tabLayout.performClickOnTab(plantTab)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // 아무 변화가 없어야 한다.
+        assertEquals(beforeCurrentItem, viewPager.currentItem)
+        assertEquals(beforeFilterVisible, ivFilter.visibility == ImageView.VISIBLE)
+        assertTrue(plantTab.isSelected)
+    }
+
+    @Test
+    fun whenPlantSelected_tappingMyGardenText_selectsMyGardenTab() {
+        val activity = launchActivity()
+        val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
+        val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
+
+        val plantTab = requireNotNull(tabLayout.findTabByTitle("Plant list"))
+        val myGardenTab = requireNotNull(tabLayout.findTabByTitle("My Garden"))
+
+        // 먼저 Plant 탭을 선택
+        tabLayout.performClickOnTab(plantTab)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // 그 상태에서 My Garden 탭을 탭
+        tabLayout.performClickOnTab(myGardenTab)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // My Garden 탭이 선택되고, ViewPager 페이지도 0번으로 돌아와야 한다.
+        assertEquals(0, viewPager.currentItem)
+        assertTrue(myGardenTab.isSelected)
+        assertTrue(!plantTab.isSelected)
     }
 }
 

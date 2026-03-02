@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Sunflower" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -17,5 +17,15 @@
         <!-- 라이트 배경이므로 status bar 아이콘/텍스트를 어두운 색으로 표시 -->
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <!-- SplashScreen API용 런처 테마 -->
+    <style name="Theme.Sunflower.Splash" parent="Theme.Sunflower">
+        <!-- 시스템 스플래시 배경색 -->
+        <item name="windowSplashScreenBackground">@color/bg_splash</item>
+        <!-- 중앙에 표시할 앱 아이콘 (적응형 런처 아이콘 사용) -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- 스플래시 이후에 적용할 실제 앱 테마 -->
+        <item name="postSplashScreenTheme">@style/Theme.Sunflower</item>
     </style>
 </resources>

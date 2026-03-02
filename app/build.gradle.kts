@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.core.ktx.v1170)
     implementation(libs.androidx.appcompat.v171)
     implementation(libs.material)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v130)
     androidTestImplementation(libs.androidx.espresso.core.v370)

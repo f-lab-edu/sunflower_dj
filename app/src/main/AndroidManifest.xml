@@ -15,11 +15,8 @@
 
         <activity
             android:name=".common.screen.main.MainActivity"
-            android:exported="false">
-        </activity>
-
-        <activity android:name=".common.screen.splash.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Sunflower.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

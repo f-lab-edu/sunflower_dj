@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,6 +22,8 @@ abstract class BaseActivity<T : ViewDataBinding>(@LayoutRes private val layoutRe
     abstract fun init()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Android 12+ SplashScreen API 및 compat 라이브러리 설치
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         // edge-to-edge: status bar / navigation bar 영역까지 액티비티 배경이 보이도록

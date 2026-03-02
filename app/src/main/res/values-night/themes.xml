@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Sunflower" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -17,5 +17,12 @@
         <!-- 다크 배경이므로 status bar 아이콘/텍스트를 밝은 색(흰색)으로 표시 -->
         <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <!-- SplashScreen API용 런처 테마 (다크 모드) -->
+    <style name="Theme.Sunflower.Splash" parent="Theme.Sunflower">
+        <item name="windowSplashScreenBackground">@color/color_121212</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.Sunflower</item>
     </style>
 </resources>
