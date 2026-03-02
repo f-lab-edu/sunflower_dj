@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Sunflower</string>
+    <string name="app_name">Sunflower_</string>
+
+    <string name="title_sunflower">Sunflower</string>
+    <string name="title_my_garden">My garden</string>
+    <string name="title_plant_list">Plant List</string>
 </resources>
