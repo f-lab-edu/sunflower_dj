@@ -1,9 +1,9 @@
-package com.djyoo.sunflower.common.screen.main
+package com.djyoo.sunflower.screen.main
 
 import com.djyoo.sunflower.R
-import com.djyoo.sunflower.common.screen.main.vm.MainUiState
-import com.djyoo.sunflower.common.screen.main.vm.MainViewModel
-import com.djyoo.sunflower.common.screen.main.vm.TabUiState
+import com.djyoo.sunflower.screen.main.vm.MainUiState
+import com.djyoo.sunflower.screen.main.vm.MainViewModel
+import com.djyoo.sunflower.screen.main.vm.TabUiState
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

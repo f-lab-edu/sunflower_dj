@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.common.screen.main
+package com.djyoo.sunflower.screen.main
 
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -7,11 +7,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.djyoo.sunflower.R
-import com.djyoo.sunflower.common.common.base.BaseActivity
-import com.djyoo.sunflower.common.screen.main.vm.MainViewModel
-import com.djyoo.sunflower.common.screen.main.vm.TabUiState
+import com.djyoo.sunflower.common.base.BaseActivity
 import com.djyoo.sunflower.databinding.ActivityMainBinding
 import com.djyoo.sunflower.databinding.ItemMainPagerBinding
+import com.djyoo.sunflower.screen.main.vm.MainViewModel
+import com.djyoo.sunflower.screen.main.vm.TabUiState
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 

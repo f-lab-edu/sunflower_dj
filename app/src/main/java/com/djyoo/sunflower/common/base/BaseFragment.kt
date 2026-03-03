@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.common.common.base
+package com.djyoo.sunflower.common.base
 
 import android.app.Activity
 import android.os.Bundle
