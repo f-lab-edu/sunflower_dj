@@ -1,11 +1,7 @@
 package com.djyoo.sunflower.common.common.base
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -40,15 +36,5 @@ abstract class BaseActivity<T : ViewDataBinding>(@LayoutRes private val layoutRe
         }
 
         init()
-    }
-
-    protected fun startActivity(context: Context, activity: Class<*>) {
-        startActivity(Intent(context, activity))
-    }
-
-    protected fun startActivityDelayed(context: Context, activity: Class<*>, delay: Long) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(context, activity))
-        }, delay)
     }
 }

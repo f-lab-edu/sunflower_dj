@@ -8,7 +8,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.common.base.BaseActivity
-import com.djyoo.sunflower.common.screen.main.vm.MainUiState
 import com.djyoo.sunflower.common.screen.main.vm.MainViewModel
 import com.djyoo.sunflower.common.screen.main.vm.TabUiState
 import com.djyoo.sunflower.databinding.ActivityMainBinding
@@ -29,7 +28,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
             val tabView = ItemMainPagerBinding.inflate(layoutInflater)
-            val item = MainTabItem.all[position]
+            val item = MainTabItem.entries[position]
 
             tabView.tabTitle.text = getString(item.titleResId)
             tabView.tabIcon.setImageResource(item.iconRes)
@@ -40,7 +39,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         mBinding.viewPager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    mVmMain.onTabSelected(MainTabItem.all[position])
+                    mVmMain.onTabSelected(MainTabItem.entries[position])
                 }
             },
         )
@@ -50,8 +49,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mVmMain.uiState.collect { state ->
-                    applyTabState(state)
-                    applyFilterState(state)
+                    applyTabState(state.tabs)
+                    applyFilterState(state.isFilterVisible)
 
                     if (mBinding.viewPager.currentItem != state.selectedTabIndex) {
                         mBinding.viewPager.setCurrentItem(state.selectedTabIndex, false)
@@ -61,8 +60,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
     }
 
-    private fun applyTabState(state: MainUiState) {
-        state.tabs.forEachIndexed { index, tabUi: TabUiState ->
+    private fun applyTabState(tabs: List<TabUiState>) {
+        tabs.forEachIndexed { index, tabUi: TabUiState ->
 
             val tabLayoutTab = mBinding.tabLayout.getTabAt(index) ?: return@forEachIndexed
             val view = tabLayoutTab.customView ?: return@forEachIndexed
@@ -72,6 +71,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             tabBinding.tabIcon.setImageResource(tabUi.iconRes)
 
             val color = if (tabUi.isSelected) {
+
                 getColor(R.color.color_4caf50)
             } else {
                 getColor(R.color.color_4c4c4c)
@@ -82,7 +82,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
     }
 
-    private fun applyFilterState(state: MainUiState) {
-        mBinding.ivFilter.isVisible = state.isFilterVisible
+    private fun applyFilterState(isFilterVisible: Boolean) {
+        mBinding.filterIcon.isVisible = isFilterVisible
     }
 }

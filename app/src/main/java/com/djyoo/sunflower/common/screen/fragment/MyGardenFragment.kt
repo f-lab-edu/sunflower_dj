@@ -5,7 +5,5 @@ import com.djyoo.sunflower.common.common.base.BaseFragment
 import com.djyoo.sunflower.databinding.FragmentMyGardenBinding
 
 class MyGardenFragment : BaseFragment<FragmentMyGardenBinding>(R.layout.fragment_my_garden) {
-    override fun init() {
 
-    }
 }

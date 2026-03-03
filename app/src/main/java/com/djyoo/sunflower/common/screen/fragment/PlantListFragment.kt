@@ -5,7 +5,5 @@ import com.djyoo.sunflower.common.common.base.BaseFragment
 import com.djyoo.sunflower.databinding.FragmentPlanetListBinding
 
 class PlantListFragment : BaseFragment<FragmentPlanetListBinding>(R.layout.fragment_planet_list) {
-    override fun init() {
 
-    }
 }

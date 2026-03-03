@@ -8,13 +8,13 @@ import com.djyoo.sunflower.common.screen.fragment.PlantListFragment
 
 class MainPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
     override fun createFragment(position: Int): Fragment {
-        return when (MainTabItem.all[position]) {
+        return when (MainTabItem.entries[position]) {
             MainTabItem.GARDEN -> MyGardenFragment()
             MainTabItem.PLANT -> PlantListFragment()
         }
     }
 
     override fun getItemCount(): Int {
-        return MainTabItem.all.size
+        return MainTabItem.entries.size
     }
 }

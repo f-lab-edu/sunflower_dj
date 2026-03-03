@@ -11,8 +11,4 @@ enum class MainTabItem(
 ) {
     GARDEN(R.string.title_my_garden, R.drawable.ic_my_garden_active, false),
     PLANT(R.string.title_plant_list, R.drawable.ic_plant_list_active, true);
-
-    companion object {
-        val all: List<MainTabItem> = values().toList()
-    }
 }

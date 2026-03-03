@@ -22,7 +22,7 @@ data class MainUiState(
 class MainViewModel : ViewModel() {
 
     private fun buildTabs(selectedIndex: Int): List<TabUiState> {
-        return MainTabItem.all.mapIndexed { index, tab ->
+        return MainTabItem.entries.mapIndexed { index, tab ->
             TabUiState(
                 titleResId = tab.titleResId,
                 iconRes = tab.iconRes,
@@ -35,13 +35,13 @@ class MainViewModel : ViewModel() {
         MainUiState(
             tabs = buildTabs(selectedIndex = 0),
             selectedTabIndex = 0,
-            isFilterVisible = MainTabItem.all[0].showsFilter,
+            isFilterVisible = MainTabItem.entries[0].showsFilter,
         ),
     )
     val uiState: StateFlow<MainUiState> = _uiState
 
     fun onTabSelected(tab: MainTabItem) {
-        val position = MainTabItem.all.indexOf(tab).coerceAtLeast(0)
+        val position = MainTabItem.entries.indexOf(tab).coerceAtLeast(0)
         _uiState.value = _uiState.value.copy(
             tabs = buildTabs(selectedIndex = position),
             selectedTabIndex = position,
