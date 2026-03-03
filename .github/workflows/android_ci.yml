@@ -29,10 +29,8 @@ jobs:
         run: ./gradlew ktlintCheck
 
       # 2. Robolectric을 포함한 단위 테스트 실행
-      # Robolectric의 원활한 실행을 위해 메모리 할당량을 명시합니다.
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest --info
-
+        run: ./gradlew testDebug --info
 
       # 3. 테스트 실패 시 리포트 업로드 (어디가 틀렸는지 확인용)
       - name: Upload Test Report
@@ -40,7 +38,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: app/build/reports/tests/testDebugUnitTest/
+          # 기존 testDebugUnitTest 대신 testDebug로 경로 변경
+          path: app/build/reports/tests/testDebug/
 
       # 4. CD: 설치 가능한 APK 빌드
       - name: Build debug APK

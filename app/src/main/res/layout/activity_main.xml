@@ -5,32 +5,53 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?android:attr/windowBackground">
 
-        <Button
-            android:id="@+id/btn_garden"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:text="My garden"
-            android:textAllCaps="false"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/btn_planet"
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:text="@string/title_sunflower"
+            android:textColor="@color/color_000000"
+            android:textSize="30dp"
+            android:textStyle="normal"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btn_planet"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
+        <ImageView
+            android:id="@+id/filterIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginRight="20dp"
-            android:text="Planet list"
-            android:textAllCaps="false"
-            app:layout_constraintLeft_toRightOf="@+id/btn_garden"
+            android:src="@drawable/ic_filter_list_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/titleText"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_garden" />
+            app:layout_constraintTop_toTopOf="@+id/titleText" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/tab_background"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@+id/titleText"
+            app:tabIndicatorColor="@color/color_4caf50"
+            app:tabIndicatorHeight="4dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#BFC4B9"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tab_layout" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

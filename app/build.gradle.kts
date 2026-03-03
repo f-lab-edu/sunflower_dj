@@ -39,6 +39,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        viewBinding = true
     }
 
     testOptions {
@@ -62,6 +63,7 @@ dependencies {
     implementation(libs.androidx.core.ktx.v1170)
     implementation(libs.androidx.appcompat.v171)
     implementation(libs.material)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v130)
     androidTestImplementation(libs.androidx.espresso.core.v370)
@@ -78,4 +80,9 @@ dependencies {
     // UI 요소 검증을 위한 라이브러리
     testImplementation(libs.androidx.junit.v130)
     testImplementation(libs.androidx.espresso.core.v370)
+
+    // UI 를 위한 libs
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.google.material)
+    implementation(libs.androidx.fragment.ktx)
 }
