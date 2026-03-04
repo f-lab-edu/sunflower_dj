@@ -1,5 +1,6 @@
 package com.djyoo.sunflower.screen.main
 
+import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -16,17 +17,19 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
-    private val mVmMain: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
-    override fun init() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         setupViewPager()
         observeUiState()
     }
 
     private fun setupViewPager() {
-        mBinding.viewPager.adapter = MainPagerAdapter(this)
+        binding.viewPager.adapter = MainPagerAdapter(this)
 
-        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             val tabView = ItemMainPagerBinding.inflate(layoutInflater)
             val item = MainTabItem.entries[position]
 
@@ -36,10 +39,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             tab.customView = tabView.root
         }.attach()
 
-        mBinding.viewPager.registerOnPageChangeCallback(
+        binding.viewPager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    mVmMain.onTabSelected(MainTabItem.entries[position])
+                    mainViewModel.onTabSelected(MainTabItem.entries[position])
                 }
             },
         )
@@ -48,12 +51,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private fun observeUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mVmMain.uiState.collect { state ->
+                mainViewModel.uiState.collect { state ->
                     applyTabState(state.tabs)
                     applyFilterState(state.isFilterVisible)
 
-                    if (mBinding.viewPager.currentItem != state.selectedTabIndex) {
-                        mBinding.viewPager.setCurrentItem(state.selectedTabIndex, false)
+                    if (binding.viewPager.currentItem != state.selectedTabIndex) {
+                        binding.viewPager.setCurrentItem(state.selectedTabIndex, false)
                     }
                 }
             }
@@ -63,7 +66,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private fun applyTabState(tabs: List<TabUiState>) {
         tabs.forEachIndexed { index, tabUi: TabUiState ->
 
-            val tabLayoutTab = mBinding.tabLayout.getTabAt(index) ?: return@forEachIndexed
+            val tabLayoutTab = binding.tabLayout.getTabAt(index) ?: return@forEachIndexed
             val view = tabLayoutTab.customView ?: return@forEachIndexed
             val tabBinding = ItemMainPagerBinding.bind(view)
 
@@ -83,6 +86,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun applyFilterState(isFilterVisible: Boolean) {
-        mBinding.filterIcon.isVisible = isFilterVisible
+        binding.filterIcon.isVisible = isFilterVisible
     }
 }

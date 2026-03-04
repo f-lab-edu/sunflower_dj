@@ -25,14 +25,14 @@ class MyGardenFragmentTest {
     }
 
     @Test
-    fun tappingAddPlanetButton_fromMyGarden_navigatesToPlantListTab() {
+    fun tappingAddPlantButton_fromMyGarden_navigatesToPlantListTab() {
         // given: MainActivity 가 실행된 상태에서 기본 탭은 My garden
         val activity = launchMainActivity()
         val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
         assertEquals(0, viewPager.currentItem)
 
-        // when: My garden 화면의 "Add planet" 버튼을 탭한다.
-        onView(withText("Add planet")).perform(click())
+        // when: My garden 화면의 "Add plant" 버튼을 탭한다.
+        onView(withText("Add plant")).perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // then: Plant List 탭(인덱스 1)으로 이동해야 한다.

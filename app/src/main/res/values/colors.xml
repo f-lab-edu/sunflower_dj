@@ -12,8 +12,8 @@
     <color name="bg_splash">#FFFFFF</color>
     <color name="bg_filter">#000000</color>
 
-    <color name="bg_add_planet">#2D7C00</color>
-    <color name="color_add_planet">#FFFFFF</color>
+    <color name="bg_add_plant">#2D7C00</color>
+    <color name="color_add_plant">#FFFFFF</color>
     <color name="color_garden_empty">#000000</color>
 
     <color name="color_000000">#000000</color>

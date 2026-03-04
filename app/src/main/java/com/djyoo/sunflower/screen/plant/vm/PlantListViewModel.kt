@@ -1,9 +1,9 @@
-package com.djyoo.sunflower.screen.planet.vm
+package com.djyoo.sunflower.screen.plant.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.djyoo.sunflower.screen.planet.data.model.Plant
-import com.djyoo.sunflower.screen.planet.data.repository.PlantRepository
+import com.djyoo.sunflower.screen.plant.data.model.Plant
+import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,7 +26,7 @@ class PlantListViewModel(private val plantRepository: PlantRepository) : ViewMod
     /**
      * assets에서 식물 목록을 불러와 UI 상태에 반영한다.
      */
-    fun loadPlants() {
+    private fun loadPlants() {
         viewModelScope.launch {
             runCatching {
                 plantRepository.loadPlantsFromAssets()

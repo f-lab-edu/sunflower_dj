@@ -26,11 +26,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.djyoo.sunflower.common.widget.CustomRoundLayout
-            android:id="@+id/add_planet_button"
+            android:id="@+id/add_plant_button"
             android:layout_width="110dp"
             android:layout_height="40dp"
             android:layout_marginTop="5dp"
-            android:background="@color/bg_add_planet"
+            android:background="@color/bg_add_plant"
             app:bottom_left_corner_radius="15dp"
             app:layout_constraintLeft_toLeftOf="@+id/garden_empty_text"
             app:layout_constraintRight_toRightOf="@+id/garden_empty_text"
@@ -42,9 +42,9 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/color_add_planet"
+                android:textColor="@color/color_add_plant"
                 android:textSize="14dp"
-                android:text="@string/add_planet" />
+                android:text="@string/add_plant" />
 
 
         </com.djyoo.sunflower.common.widget.CustomRoundLayout>

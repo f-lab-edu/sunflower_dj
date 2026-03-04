@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.screen.planet.data.model
+package com.djyoo.sunflower.screen.plant.data.model
 
 import com.google.gson.annotations.SerializedName
 

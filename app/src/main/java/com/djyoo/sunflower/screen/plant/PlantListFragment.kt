@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.screen.planet
+package com.djyoo.sunflower.screen.plant
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,15 +13,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.base.BaseFragment
 import com.djyoo.sunflower.common.widget.GridSpacingItemDecoration
-import com.djyoo.sunflower.databinding.FragmentPlanetListBinding
-import com.djyoo.sunflower.screen.planet.data.model.Plant
-import com.djyoo.sunflower.screen.planet.data.repository.PlantRepository
-import com.djyoo.sunflower.screen.planet.vm.PlantListViewModel
+import com.djyoo.sunflower.databinding.FragmentPlantListBinding
+import com.djyoo.sunflower.screen.plant.data.model.Plant
+import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
+import com.djyoo.sunflower.screen.plant.vm.PlantListViewModel
 import kotlinx.coroutines.launch
 
-class PlantListFragment : BaseFragment<FragmentPlanetListBinding>(R.layout.fragment_planet_list) {
+class PlantListFragment : BaseFragment<FragmentPlantListBinding>(R.layout.fragment_plant_list) {
 
-    private val mVmPlanet: PlantListViewModel by viewModels {
+    private val plantViewModel: PlantListViewModel by viewModels {
         viewModelFactory {
             initializer {
                 val repository = PlantRepository(requireContext().assets)
@@ -30,8 +30,8 @@ class PlantListFragment : BaseFragment<FragmentPlanetListBinding>(R.layout.fragm
         }
     }
 
-    private val mPlantListAdapter = PlantListAdapter { plant ->
-        mVmPlanet.onPlantClicked(plant)
+    private val plantListAdapter = PlantListAdapter { plant ->
+        plantViewModel.onPlantClicked(plant)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,12 +41,12 @@ class PlantListFragment : BaseFragment<FragmentPlanetListBinding>(R.layout.fragm
     }
 
     private fun setupRecyclerView() {
-        mBinding.plantListRecyclerView.adapter = mPlantListAdapter
-        mBinding.plantListRecyclerView.layoutManager =
+        binding.plantListRecyclerView.adapter = plantListAdapter
+        binding.plantListRecyclerView.layoutManager =
             GridLayoutManager(requireContext(), 2)
-        mBinding.plantListRecyclerView.setHasFixedSize(true)
+        binding.plantListRecyclerView.setHasFixedSize(true)
 
-        mBinding.plantListRecyclerView.addItemDecoration(
+        binding.plantListRecyclerView.addItemDecoration(
             GridSpacingItemDecoration(
                 spanCount = 2,
                 spacingDp = 20,
@@ -59,12 +59,12 @@ class PlantListFragment : BaseFragment<FragmentPlanetListBinding>(R.layout.fragm
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    mVmPlanet.plants.collect { plants ->
+                    plantViewModel.plants.collect { plants ->
                         applyPlantListState(plants)
                     }
                 }
                 launch {
-                    mVmPlanet.navigateToPlantDetail.collect { _ ->
+                    plantViewModel.navigateToPlantDetail.collect { _ ->
                         openPlantDetail()
                     }
                 }
@@ -73,7 +73,7 @@ class PlantListFragment : BaseFragment<FragmentPlanetListBinding>(R.layout.fragm
     }
 
     private fun applyPlantListState(plants: List<Plant>) {
-        mPlantListAdapter.submitItems(plants)
+        plantListAdapter.submitList(plants)
     }
 
     private fun openPlantDetail() {

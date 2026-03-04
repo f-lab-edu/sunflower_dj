@@ -17,7 +17,7 @@ class MyGardenFragment : BaseFragment<FragmentMyGardenBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mBinding.addPlanetButton.setOnClickListener {
+        binding.addPlantButton.setOnClickListener {
             mainViewModel.onTabSelected(MainTabItem.PLANT)
         }
     }

@@ -5,8 +5,8 @@
     <color name="bg_splash">#000000</color>
     <color name="bg_filter">#BFC4B9</color>
 
-    <color name="bg_add_planet">#8ED468</color>
-    <color name="color_add_planet">#000000</color>
+    <color name="bg_add_plant">#8ED468</color>
+    <color name="color_add_plant">#000000</color>
     <color name="color_garden_empty">#FFFFFF</color>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.screen.planet
+package com.djyoo.sunflower.screen.plant
 
 import android.app.Application
 import android.os.Looper
@@ -54,7 +54,7 @@ class PlantListFragmentTest {
         val startedIntent = shadowApplication.nextStartedActivity
 
         assertEquals(
-            PlantDetailActivity::class.java.name,
+            _root_ide_package_.com.djyoo.sunflower.screen.plant.PlantDetailActivity::class.java.name,
             startedIntent.component?.className,
         )
     }
