@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.google.material)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.gson)
     implementation(libs.androidx.recyclerview)
     implementation(libs.glide)

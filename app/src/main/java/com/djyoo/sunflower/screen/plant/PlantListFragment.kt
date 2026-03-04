@@ -64,8 +64,8 @@ class PlantListFragment : BaseFragment<FragmentPlantListBinding>(R.layout.fragme
                     }
                 }
                 launch {
-                    plantViewModel.navigateToPlantDetail.collect { _ ->
-                        openPlantDetail()
+                    plantViewModel.navigateToPlantDetail.collect { plant ->
+                        openPlantDetail(plant.plantId)
                     }
                 }
             }
@@ -76,7 +76,11 @@ class PlantListFragment : BaseFragment<FragmentPlantListBinding>(R.layout.fragme
         plantListAdapter.submitList(plants)
     }
 
-    private fun openPlantDetail() {
-        startActivity(Intent(requireContext(), PlantDetailActivity::class.java))
+    private fun openPlantDetail(plantId: String) {
+        startActivity(
+            Intent(activity, PlantDetailActivity::class.java).apply {
+                putExtra(PlantDetailActivity.EXTRA_PLANT_ID, plantId)
+            },
+        )
     }
 }

@@ -27,6 +27,13 @@ class PlantRepository(
         parsePlantList(jsonString)
     }
 
+    /**
+     * [plantId]에 해당하는 [Plant]를 조회한다.
+     * assets에서 목록을 불러온 뒤 일치하는 항목을 반환한다.
+     */
+    suspend fun getPlantById(plantId: String): Plant? =
+        loadPlantsFromAssets().find { it.plantId == plantId }
+
     private fun parsePlantList(jsonString: String): List<Plant> {
         val typeToken = object : com.google.gson.reflect.TypeToken<List<Plant>>() {}
         return gson.fromJson(jsonString, typeToken.type) ?: emptyList()
