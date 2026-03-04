@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.common.common.base
+package com.djyoo.sunflower.common.base
 
 import android.app.Activity
 import android.os.Bundle
@@ -11,18 +11,18 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes private val layoutResId: Int) : Fragment() {
-    protected lateinit var mBinding: T
-    protected lateinit var mActivity: Activity
+    protected lateinit var binding: T
+    protected lateinit var activity: Activity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
-        mActivity = requireActivity()
+        binding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
+        activity = requireActivity()
 
-        return mBinding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
     }
 }

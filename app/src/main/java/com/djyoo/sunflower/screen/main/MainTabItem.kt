@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.common.screen.main
+package com.djyoo.sunflower.screen.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

@@ -1,9 +1,9 @@
-package com.djyoo.sunflower.common.screen.main.vm
+package com.djyoo.sunflower.screen.main.vm
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import com.djyoo.sunflower.common.screen.main.MainTabItem
+import com.djyoo.sunflower.screen.main.MainTabItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

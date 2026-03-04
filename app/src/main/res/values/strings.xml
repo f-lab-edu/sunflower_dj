@@ -4,4 +4,10 @@
     <string name="title_sunflower">Sunflower</string>
     <string name="title_my_garden">My garden</string>
     <string name="title_plant_list">Plant List</string>
+    <string name="plant_detail_title">Plant detail screen</string>
+
+    <string name="your_garden_is_empty">Your garden is empty</string>
+    <string name="add_plant">Add plant</string>
+
+
 </resources>

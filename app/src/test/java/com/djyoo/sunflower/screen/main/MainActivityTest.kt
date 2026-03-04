@@ -1,4 +1,4 @@
-package com.djyoo.sunflower.common.screen.main
+package com.djyoo.sunflower.screen.main
 
 import android.os.Looper
 import android.view.View
@@ -49,7 +49,7 @@ class MainActivityTest {
         val activity = launchActivity()
         val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
-        val filterIcon = activity.findViewById<ImageView>(R.id.filterIcon)
+        val filterIcon = activity.findViewById<ImageView>(R.id.filter_icon)
 
         // My Garden 이 선택된 초기 상태에서 "Plant List" 텍스트를 탭
         onView(withText("Plant List")).perform(click())
@@ -70,7 +70,7 @@ class MainActivityTest {
         val activity = launchActivity()
         val viewPager = activity.findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = activity.findViewById<TabLayout>(R.id.tab_layout)
-        val filterIcon = activity.findViewById<ImageView>(R.id.filterIcon)
+        val filterIcon = activity.findViewById<ImageView>(R.id.filter_icon)
 
         // 먼저 Plant 탭을 선택
         onView(withText("Plant List")).perform(click())
