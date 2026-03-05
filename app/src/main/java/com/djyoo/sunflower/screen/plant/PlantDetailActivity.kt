@@ -30,7 +30,6 @@ import kotlinx.coroutines.launch
 class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.activity_plant_detail) {
 
     private var isImageLoaded: Boolean = false
-    private var isAppBarCollapsed: Boolean = false
 
     private val detailViewModel: PlantDetailViewModel by viewModels {
         viewModelFactory {
@@ -55,7 +54,6 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         binding.detailAppBar.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBar, verticalOffset ->
                 val isCollapsed = appBar.totalScrollRange + verticalOffset == 0
-                isAppBarCollapsed = isCollapsed
 
                 binding.detailTitle.isVisible = !isCollapsed
                 binding.detailAddButton.isVisible = !isCollapsed && isImageLoaded
@@ -138,7 +136,6 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
                     isFirstResource: Boolean
                 ): Boolean {
                     isImageLoaded = true
-//                    binding.detailAddButton.isVisible = !isAppBarCollapsed
                     binding.detailAddButton.isVisible = binding.detailTitle.isVisible
                     return false
                 }
