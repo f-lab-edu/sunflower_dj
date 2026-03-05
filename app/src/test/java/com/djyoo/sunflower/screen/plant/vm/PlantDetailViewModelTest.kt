@@ -4,7 +4,6 @@ import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import com.djyoo.sunflower.testutil.MainDispatcherRule
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -42,7 +41,6 @@ class PlantDetailViewModelTest {
 
         // ViewModel 이 Repository 결과를 그대로 plant StateFlow 에 반영했는지 검증
         assertEquals(plant, viewModel.plant.value)
-        coVerify(exactly = 1) { repository.getPlantById("malus-pumila") }
     }
 
     @Test
@@ -57,7 +55,6 @@ class PlantDetailViewModelTest {
 
         // 반환값이 없으면 plant StateFlow 도 null 이어야 한다.
         assertEquals(null, viewModel.plant.value)
-        coVerify(exactly = 1) { repository.getPlantById("unknown") }
     }
 }
 

@@ -8,9 +8,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.djyoo.sunflower.R
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,13 +39,10 @@ class PlantDetailActivityTest {
         // when
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        val appContext = ApplicationProvider.getApplicationContext<Application>()
-        val wateringText = appContext.getString(R.string.watering_interval_days, 30)
-
         // then: 제목, 워터링 정보가 화면에 표시된다.
         onView(withText("Apple")).check(matches(isDisplayed()))
-        onView(withText(R.string.watering_needs)).check(matches(isDisplayed()))
-        onView(withText(wateringText)).check(matches(isDisplayed()))
+        onView(withText("Watering needs")).check(matches(isDisplayed()))
+        onView(withText("every 30 days")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -56,7 +52,7 @@ class PlantDetailActivityTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // when
-        onView(withId(R.id.detail_share_button)).perform(click())
+        onView(withContentDescription("Share")).perform(click())
 
         // then: ACTION_CHOOSER 로 공유 인텐트가 발행된다.
         val application = ApplicationProvider.getApplicationContext<Application>()
@@ -69,8 +65,10 @@ class PlantDetailActivityTest {
         assertEquals(Intent.ACTION_SEND, sendIntent?.action)
         assertEquals("text/plain", sendIntent?.type)
 
-        val expectedText = application.getString(R.string.share_plant_text, "Apple")
-        assertEquals(expectedText, sendIntent?.getStringExtra(Intent.EXTRA_TEXT))
+        assertEquals(
+            "Check out the Apple plant in the Android Sunflower app",
+            sendIntent?.getStringExtra(Intent.EXTRA_TEXT),
+        )
     }
 }
 

@@ -6,8 +6,8 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -35,8 +35,8 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
     private val detailViewModel: PlantDetailViewModel by viewModels {
         viewModelFactory {
             initializer {
-                val plantId = this@PlantDetailActivity.intent.getStringExtra(EXTRA_PLANT_ID) ?: ""
-                val repository = PlantRepository(this@PlantDetailActivity.applicationContext.assets)
+                val plantId = this@PlantDetailActivity.intent.getStringExtra(EXTRA_PLANT_ID).orEmpty()
+                val repository = PlantRepository(this@PlantDetailActivity.assets)
                 PlantDetailViewModel(repository, plantId)
             }
         }
@@ -57,9 +57,8 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
                 val isCollapsed = appBar.totalScrollRange + verticalOffset == 0
                 isAppBarCollapsed = isCollapsed
 
-                binding.detailTitle.visibility = if (isCollapsed) View.GONE else View.VISIBLE
-                binding.detailAddButton.visibility =
-                    if (!isCollapsed && isImageLoaded) View.VISIBLE else View.GONE
+                binding.detailTitle.isVisible = !isCollapsed
+                binding.detailAddButton.isVisible = !isCollapsed && isImageLoaded
             },
         )
 
@@ -68,27 +67,34 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         }
 
         binding.detailShareButton.setOnClickListener {
-            val plant = detailViewModel.plant.value ?: return@setOnClickListener
-            val text = getString(R.string.share_plant_text, plant.name)
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, text)
-            }
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
+            detailViewModel.onShareClicked()
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detailViewModel.plant.collect { plant ->
-                    plant?.let { bindPlant(it) } ?: run {
-                        binding.detailCollapsingToolbar.title = ""
-                        binding.detailTitle.text = getString(R.string.plant_detail_title)
-                        binding.detailWateringValue.text = ""
-                        binding.detailDescription.text = ""
-                    }
-                }
+                launch { detailViewModel.plant.collect(::handlePlantState) }
+                launch { detailViewModel.shareEvent.collect(::handleShareEvent) }
             }
         }
+    }
+
+    private fun handlePlantState(plant: Plant?) {
+        plant?.let { bindPlant(it) } ?: clearPlantDetail()
+    }
+
+    private fun clearPlantDetail() {
+        binding.detailCollapsingToolbar.title = ""
+        binding.detailTitle.text = getString(R.string.plant_detail_title)
+        binding.detailWateringValue.text = ""
+        binding.detailDescription.text = ""
+    }
+
+    private fun handleShareEvent(plantName: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.share_plant_text, plantName))
+        }
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
     }
 
     private fun bindPlant(plant: Plant) {
@@ -107,7 +113,7 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
     private fun loadPlantImage(url: String) {
         // 이미지가 로딩되기 전에는 Add 버튼을 숨긴다.
         isImageLoaded = false
-        binding.detailAddButton.visibility = View.GONE
+        binding.detailAddButton.isVisible = false
 
         Glide.with(this)
             .load(url)
@@ -120,7 +126,7 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
                     isFirstResource: Boolean
                 ): Boolean {
                     isImageLoaded = false
-                    binding.detailAddButton.visibility = View.GONE
+                    binding.detailAddButton.isVisible = false
                     return false
                 }
 
@@ -132,8 +138,8 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
                     isFirstResource: Boolean
                 ): Boolean {
                     isImageLoaded = true
-                    binding.detailAddButton.visibility =
-                        if (!isAppBarCollapsed) View.VISIBLE else View.GONE
+//                    binding.detailAddButton.isVisible = !isAppBarCollapsed
+                    binding.detailAddButton.isVisible = binding.detailTitle.isVisible
                     return false
                 }
             })
