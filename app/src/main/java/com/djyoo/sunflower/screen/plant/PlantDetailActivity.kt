@@ -2,24 +2,21 @@ package com.djyoo.sunflower.screen.plant
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import androidx.activity.viewModels
+import androidx.annotation.VisibleForTesting
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.base.BaseActivity
+import com.djyoo.sunflower.common.image.GlideImageLoader
+import com.djyoo.sunflower.common.image.ImageLoader
 import com.djyoo.sunflower.databinding.ActivityPlantDetailBinding
 import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
@@ -30,6 +27,9 @@ import kotlinx.coroutines.launch
 class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.activity_plant_detail) {
 
     private var isImageLoaded: Boolean = false
+
+    @VisibleForTesting
+    var imageLoader: ImageLoader = GlideImageLoader()
 
     private val detailViewModel: PlantDetailViewModel by viewModels {
         viewModelFactory {
@@ -109,38 +109,13 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
     }
 
     private fun loadPlantImage(url: String) {
-        // 이미지가 로딩되기 전에는 Add 버튼을 숨긴다.
         isImageLoaded = false
         binding.detailAddButton.isVisible = false
 
-        Glide.with(this)
-            .load(url)
-            .centerCrop()
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    isImageLoaded = false
-                    binding.detailAddButton.isVisible = false
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable?>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    isImageLoaded = true
-                    binding.detailAddButton.isVisible = binding.detailTitle.isVisible
-                    return false
-                }
-            })
-            .into(binding.detailImage)
+        imageLoader.load(url, binding.detailImage) {
+            isImageLoaded = true
+            binding.detailAddButton.isVisible = binding.detailTitle.isVisible
+        }
     }
 
     companion object {
