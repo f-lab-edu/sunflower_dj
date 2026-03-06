@@ -26,7 +26,18 @@ import kotlinx.coroutines.launch
 
 class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.activity_plant_detail) {
 
-    private var isImageLoaded: Boolean = false
+    private var isTitleVisible
+        get() = binding.detailTitle.isVisible
+        set(value) {
+            binding.detailTitle.isVisible = value
+            reevaluateDetailAddButtonVisibility()
+        }
+
+    private var hasImageLoaded = false
+        set(value) {
+            field = value
+            reevaluateDetailAddButtonVisibility()
+        }
 
     @VisibleForTesting
     var imageLoader: ImageLoader = GlideImageLoader()
@@ -45,7 +56,6 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         super.onCreate(savedInstanceState)
 
         setSupportActionBar(binding.detailToolbar)
-        // 툴바의 기본 네비게이션 아이콘은 사용하지 않고 커스텀 버튼을 사용한다.
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -54,9 +64,7 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         binding.detailAppBar.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBar, verticalOffset ->
                 val isCollapsed = appBar.totalScrollRange + verticalOffset == 0
-
-                binding.detailTitle.isVisible = !isCollapsed
-                binding.detailAddButton.isVisible = !isCollapsed && isImageLoaded
+                isTitleVisible = !isCollapsed
             },
         )
 
@@ -76,8 +84,12 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         }
     }
 
+    private fun reevaluateDetailAddButtonVisibility() {
+        binding.detailAddButton.isVisible = isTitleVisible && hasImageLoaded
+    }
+
     private fun handlePlantState(plant: Plant?) {
-        plant?.let { bindPlant(it) } ?: clearPlantDetail()
+        plant?.let(::bindPlant) ?: clearPlantDetail()
     }
 
     private fun clearPlantDetail() {
@@ -109,12 +121,10 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
     }
 
     private fun loadPlantImage(url: String) {
-        isImageLoaded = false
-        binding.detailAddButton.isVisible = false
+        hasImageLoaded = false
 
         imageLoader.load(url, binding.detailImage) {
-            isImageLoaded = true
-            binding.detailAddButton.isVisible = binding.detailTitle.isVisible
+            hasImageLoaded = true
         }
     }
 

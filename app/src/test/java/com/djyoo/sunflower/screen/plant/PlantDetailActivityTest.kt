@@ -6,14 +6,19 @@ import android.os.Looper
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.image.ImageLoader
 import com.djyoo.sunflower.testutil.FakeImageLoader
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.isA
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,30 +89,40 @@ class PlantDetailActivityTest {
     fun addButton_isNotVisible_beforeImageLoaded() {
         // given
         val fakeImageLoader = FakeImageLoader()
-        val activity = launchActivity("malus-pumila", fakeImageLoader)
+        launchActivity("malus-pumila", fakeImageLoader)
 
         // when
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // then: 이미지가 로딩되지 않았으므로 Add 버튼이 보이지 않는다.
-        assertEquals(View.GONE, activity.findViewById<View>(R.id.detail_add_button).visibility)
+        onView(withContentDescription("Add plant"))
+            .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
 
     @Test
     fun addButton_isVisible_afterImageLoaded() {
         // given
         val fakeImageLoader = FakeImageLoader()
-        val activity = launchActivity("malus-pumila", fakeImageLoader)
+        launchActivity("malus-pumila", fakeImageLoader)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Robolectric에서는 AppBarLayout 스크롤이 동작하지 않아
         // 확장 상태(detailTitle visible)를 수동으로 설정한다.
-        activity.findViewById<View>(R.id.detail_title).visibility = View.VISIBLE
+        onView(withText("Apple")).perform(setVisibility(View.VISIBLE))
 
         // when: 이미지 로딩 완료
         fakeImageLoader.triggerLoaded()
 
         // then: 이미지 로딩 후 Add 버튼이 표시된다.
-        assertEquals(View.VISIBLE, activity.findViewById<View>(R.id.detail_add_button).visibility)
+        onView(withContentDescription("Add plant"))
+            .check(matches(isDisplayed()))
+    }
+
+    private fun setVisibility(visibility: Int) = object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isA(View::class.java)
+        override fun getDescription(): String = "set visibility to $visibility"
+        override fun perform(uiController: UiController, view: View) {
+            view.visibility = visibility
+        }
     }
 }
