@@ -9,4 +9,8 @@
     <color name="color_add_plant">#000000</color>
     <color name="color_garden_empty">#FFFFFF</color>
 
+    <!-- Plant detail: 다크 모드 -->
+    <color name="plant_detail_bg">#121212</color>
+    <color name="plant_detail_text">#FFFFFF</color>
+    <color name="plant_detail_secondary">#9E9E9E</color>
 </resources>

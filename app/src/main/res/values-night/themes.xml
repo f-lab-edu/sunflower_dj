@@ -19,6 +19,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- Plant detail AppBar: 다크 모드 → 밝은 아이콘 -->
+    <style name="ThemeOverlay.Sunflower.PlantDetail.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <!-- SplashScreen API용 런처 테마 (다크 모드) -->
     <style name="Theme.Sunflower.Splash" parent="Theme.Sunflower">
         <item name="windowSplashScreenBackground">@color/color_121212</item>

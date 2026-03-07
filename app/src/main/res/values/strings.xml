@@ -5,6 +5,10 @@
     <string name="title_my_garden">My garden</string>
     <string name="title_plant_list">Plant List</string>
     <string name="plant_detail_title">Plant detail screen</string>
+    <string name="watering_needs">Watering needs</string>
+    <string name="watering_interval_days">every %d days</string>
+    <string name="share">Share</string>
+    <string name="share_plant_text">Check out the %1$s plant in the Android Sunflower app</string>
 
     <string name="your_garden_is_empty">Your garden is empty</string>
     <string name="add_plant">Add plant</string>

@@ -24,5 +24,8 @@
     <color name="color_BFC4B9">#BFC4B9</color>
     <color name="color_434E3E">#434E3E</color>
 
-
+    <!-- Plant detail: 라이트 모드 -->
+    <color name="plant_detail_bg">#FFFFFF</color>
+    <color name="plant_detail_text">#000000</color>
+    <color name="plant_detail_secondary">#616161</color>
 </resources>

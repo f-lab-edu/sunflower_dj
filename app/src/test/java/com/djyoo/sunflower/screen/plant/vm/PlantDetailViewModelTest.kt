@@ -1,0 +1,60 @@
+package com.djyoo.sunflower.screen.plant.vm
+
+import com.djyoo.sunflower.screen.plant.data.model.Plant
+import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
+import com.djyoo.sunflower.testutil.MainDispatcherRule
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Rule
+import org.junit.Test
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class PlantDetailViewModelTest {
+
+    // Main 디스패처를 테스트용 코루틴 디스패처로 교체해서 viewModelScope 코루틴을 제어한다.
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    private val repository: PlantRepository = mockk()
+
+    @Test
+    fun loadPlant_emitsPlantFromRepository() = runTest {
+        val plant = Plant(
+            plantId = "malus-pumila",
+            name = "Apple",
+            description = "desc",
+            growZoneNumber = 3,
+            wateringInterval = 30,
+            imageUrl = "https://example.com/apple.jpg",
+        )
+        // Repository 가 특정 Plant 를 반환하도록 설정
+        coEvery { repository.getPlantById("malus-pumila") } returns plant
+
+        val viewModel = PlantDetailViewModel(repository, "malus-pumila")
+
+        // 초기 코루틴 작업이 모두 완료되도록 가상 시간 진행
+        advanceUntilIdle()
+
+        // ViewModel 이 Repository 결과를 그대로 plant StateFlow 에 반영했는지 검증
+        assertEquals(plant, viewModel.plant.value)
+    }
+
+    @Test
+    fun loadPlant_whenRepositoryReturnsNull_emitsNull() = runTest {
+        // Repository 가 null 을 반환하는 경우
+        coEvery { repository.getPlantById("unknown") } returns null
+
+        val viewModel = PlantDetailViewModel(repository, "unknown")
+
+        // 초기 코루틴 작업이 모두 완료되도록 가상 시간 진행
+        advanceUntilIdle()
+
+        // 반환값이 없으면 plant StateFlow 도 null 이어야 한다.
+        assertEquals(null, viewModel.plant.value)
+    }
+}
+
