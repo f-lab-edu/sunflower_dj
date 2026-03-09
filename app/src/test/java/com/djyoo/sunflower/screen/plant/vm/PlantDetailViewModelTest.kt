@@ -1,11 +1,14 @@
 package com.djyoo.sunflower.screen.plant.vm
 
+import com.djyoo.sunflower.screen.garden.data.repository.GardenRepository
 import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import com.djyoo.sunflower.testutil.MainDispatcherRule
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -15,11 +18,13 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlantDetailViewModelTest {
 
-    // Main 디스패처를 테스트용 코루틴 디스패처로 교체해서 viewModelScope 코루틴을 제어한다.
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository: PlantRepository = mockk()
+    private val gardenRepository: GardenRepository = mockk {
+        every { getGardenPlantById(any()) } returns flowOf(null)
+    }
 
     @Test
     fun loadPlant_emitsPlantFromRepository() = runTest {
@@ -34,7 +39,7 @@ class PlantDetailViewModelTest {
         // Repository 가 특정 Plant 를 반환하도록 설정
         coEvery { repository.getPlantById("malus-pumila") } returns plant
 
-        val viewModel = PlantDetailViewModel(repository, "malus-pumila")
+        val viewModel = PlantDetailViewModel(repository, gardenRepository, "malus-pumila")
 
         // 초기 코루틴 작업이 모두 완료되도록 가상 시간 진행
         advanceUntilIdle()
@@ -48,7 +53,7 @@ class PlantDetailViewModelTest {
         // Repository 가 null 을 반환하는 경우
         coEvery { repository.getPlantById("unknown") } returns null
 
-        val viewModel = PlantDetailViewModel(repository, "unknown")
+        val viewModel = PlantDetailViewModel(repository, gardenRepository, "unknown")
 
         // 초기 코루틴 작업이 모두 완료되도록 가상 시간 진행
         advanceUntilIdle()

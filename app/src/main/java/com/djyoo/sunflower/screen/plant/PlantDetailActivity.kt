@@ -15,13 +15,16 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.base.BaseActivity
+import com.djyoo.sunflower.common.database.SunflowerDatabase
 import com.djyoo.sunflower.common.image.GlideImageLoader
 import com.djyoo.sunflower.common.image.ImageLoader
 import com.djyoo.sunflower.databinding.ActivityPlantDetailBinding
+import com.djyoo.sunflower.screen.garden.data.repository.GardenRepository
 import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import com.djyoo.sunflower.screen.plant.vm.PlantDetailViewModel
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.activity_plant_detail) {
@@ -30,6 +33,12 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         get() = binding.detailTitle.isVisible
         set(value) {
             binding.detailTitle.isVisible = value
+            reevaluateDetailAddButtonVisibility()
+        }
+
+    private var isPlantInGarden = false
+        set(value) {
+            field = value
             reevaluateDetailAddButtonVisibility()
         }
 
@@ -46,8 +55,10 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         viewModelFactory {
             initializer {
                 val plantId = this@PlantDetailActivity.intent.getStringExtra(EXTRA_PLANT_ID).orEmpty()
-                val repository = PlantRepository(this@PlantDetailActivity.assets)
-                PlantDetailViewModel(repository, plantId)
+                val plantRepository = PlantRepository(this@PlantDetailActivity.assets)
+                val plantDao = SunflowerDatabase.getInstance(this@PlantDetailActivity).plantDao()
+                val gardenRepository = GardenRepository(plantDao)
+                PlantDetailViewModel(plantRepository, gardenRepository, plantId)
             }
         }
     }
@@ -76,16 +87,22 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
             detailViewModel.onShareClicked()
         }
 
+        binding.detailAddButton.setOnClickListener {
+            detailViewModel.onAddToGardenClicked()
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch { detailViewModel.plant.collect(::handlePlantState) }
+                launch { detailViewModel.isPlantInGarden.collect { isPlantInGarden = it } }
                 launch { detailViewModel.shareEvent.collect(::handleShareEvent) }
+                launch { detailViewModel.addedToGardenEvent.collect { handleAddedToGarden() } }
             }
         }
     }
 
     private fun reevaluateDetailAddButtonVisibility() {
-        binding.detailAddButton.isVisible = isTitleVisible && hasImageLoaded
+        binding.detailAddButton.isVisible = !isPlantInGarden && isTitleVisible && hasImageLoaded
     }
 
     private fun handlePlantState(plant: Plant?) {
@@ -97,6 +114,10 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
         binding.detailTitle.text = getString(R.string.plant_detail_title)
         binding.detailWateringValue.text = ""
         binding.detailDescription.text = ""
+    }
+
+    private fun handleAddedToGarden() {
+        Snackbar.make(binding.root, getString(R.string.added_plant_to_garden), Snackbar.LENGTH_SHORT).show()
     }
 
     private fun handleShareEvent(plantName: String) {

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.Looper
 import android.view.View
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -15,11 +16,14 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.djyoo.sunflower.common.database.SunflowerDatabase
 import com.djyoo.sunflower.common.image.ImageLoader
 import com.djyoo.sunflower.testutil.FakeImageLoader
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.isA
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -30,6 +34,25 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class PlantDetailActivityTest {
+
+    private lateinit var testDatabase: SunflowerDatabase
+
+    @Before
+    fun setup() {
+        val context = ApplicationProvider.getApplicationContext<Application>()
+        val directExecutor = java.util.concurrent.Executor { it.run() }
+        testDatabase = Room.inMemoryDatabaseBuilder(context, SunflowerDatabase::class.java)
+            .allowMainThreadQueries()
+            .setQueryExecutor(directExecutor)
+            .setTransactionExecutor(directExecutor)
+            .build()
+        SunflowerDatabase.setInstance(testDatabase)
+    }
+
+    @After
+    fun tearDown() {
+        testDatabase.close()
+    }
 
     private fun launchActivity(
         plantId: String,
@@ -116,6 +139,24 @@ class PlantDetailActivityTest {
         // then: 이미지 로딩 후 Add 버튼이 표시된다.
         onView(withContentDescription("Add plant"))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun tappingAddButton_showsSnackbarWithAddedToGardenMessage() {
+        // given
+        val fakeImageLoader = FakeImageLoader()
+        launchActivity("malus-pumila", fakeImageLoader)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withText("Apple")).perform(setVisibility(View.VISIBLE))
+        fakeImageLoader.triggerLoaded()
+
+        // when
+        onView(withContentDescription("Add plant")).perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // then
+        onView(withText("Added plant to garden")).check(matches(isDisplayed()))
     }
 
     private fun setVisibility(visibility: Int) = object : ViewAction {
