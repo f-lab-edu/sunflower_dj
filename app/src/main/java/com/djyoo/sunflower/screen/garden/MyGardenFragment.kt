@@ -39,12 +39,11 @@ class MyGardenFragment : BaseFragment<FragmentMyGardenBinding>(R.layout.fragment
         }
     }
 
-    private val gardenPlantAdapter = GardenPlantAdapter { plant ->
-        myGardenViewModel.onPlantClicked(plant)
-    }
+    private lateinit var gardenPlantAdapter: GardenPlantAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        gardenPlantAdapter = GardenPlantAdapter(myGardenViewModel::onPlantClicked)
         setupRecyclerView()
         observeUiState()
 
@@ -71,14 +70,10 @@ class MyGardenFragment : BaseFragment<FragmentMyGardenBinding>(R.layout.fragment
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    myGardenViewModel.gardenPlants.collect { plants ->
-                        applyGardenState(plants)
-                    }
+                    myGardenViewModel.gardenPlants.collect(::applyGardenState)
                 }
                 launch {
-                    myGardenViewModel.navigateToPlantDetail.collect { plant ->
-                        openPlantDetail(plant.plantId)
-                    }
+                    myGardenViewModel.navigateToPlantDetail.collect(::openPlantDetail)
                 }
             }
         }

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class MyGardenViewModel(private val gardenRepository: GardenRepository) : ViewModel() {
+class MyGardenViewModel(gardenRepository: GardenRepository) : ViewModel() {
 
     val gardenPlants: StateFlow<List<Plant>> = gardenRepository.getAllGardenPlants()
         .stateIn(
@@ -21,12 +21,12 @@ class MyGardenViewModel(private val gardenRepository: GardenRepository) : ViewMo
             initialValue = emptyList(),
         )
 
-    private val _navigateToPlantDetail = MutableSharedFlow<Plant>()
-    val navigateToPlantDetail: SharedFlow<Plant> = _navigateToPlantDetail.asSharedFlow()
+    private val _navigateToPlantDetail = MutableSharedFlow<String>()
+    val navigateToPlantDetail: SharedFlow<String> = _navigateToPlantDetail.asSharedFlow()
 
     fun onPlantClicked(plant: Plant) {
         viewModelScope.launch {
-            _navigateToPlantDetail.emit(plant)
+            _navigateToPlantDetail.emit(plant.plantId)
         }
     }
 }

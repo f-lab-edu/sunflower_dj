@@ -26,7 +26,7 @@ class MyGardenViewModelTest {
     }
 
     private fun createPlant(
-        plantId: String = "plant-1",
+        plantId: String = "malus-pumila",
         name: String = "Apple",
         description: String = "A delicious fruit",
         growZoneNumber: Int = 3,
@@ -38,8 +38,8 @@ class MyGardenViewModelTest {
     fun gardenPlants_emitsPlantsFromRepository() = runTest {
         // given
         val plants = listOf(
-            createPlant(plantId = "plant-1", name = "Apple"),
-            createPlant(plantId = "plant-2", name = "Banana"),
+            createPlant(), // Apple: malus-pumila
+            createPlant(plantId = "beta-vulgaris", name = "Beet"),
         )
         every { repository.getAllGardenPlants() } returns flowOf(plants)
 
@@ -55,8 +55,7 @@ class MyGardenViewModelTest {
     fun onPlantClicked_emitsNavigateToPlantDetailEvent() = runTest {
         // given
         val viewModel = MyGardenViewModel(repository)
-        val plant = createPlant(plantId = "plant-1", name = "Apple")
-
+        val plant = createPlant() // Apple: malus-pumila
         val deferredEvent = async { viewModel.navigateToPlantDetail.first() }
 
         // when
@@ -64,7 +63,7 @@ class MyGardenViewModelTest {
         advanceUntilIdle()
 
         // then
-        assertEquals(plant, deferredEvent.await())
+        assertEquals(plant.plantId, deferredEvent.await())
     }
 }
 

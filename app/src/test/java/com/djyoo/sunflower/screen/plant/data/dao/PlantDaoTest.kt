@@ -37,43 +37,50 @@ class PlantDaoTest {
     }
 
     private fun createPlant(
-        plantId: String = "plant-1",
+        plantId: String = "malus-pumila",
         name: String = "Apple",
         description: String = "A delicious fruit",
         growZoneNumber: Int = 3,
-        wateringInterval: Int = 7,
-        imageUrl: String = "https://example.com/apple.jpg",
+        wateringInterval: Int = 30,
+        imageUrl: String = "https://upload.wikimedia.org/wikipedia/commons/5/55/Apple_orchard_in_Tasmania.jpg",
     ) = Plant(plantId, name, description, growZoneNumber, wateringInterval, imageUrl)
 
     @Test
     fun insertPlant_emitsNewItem() = runTest {
-        plantDao.insertPlant(createPlant(plantId = "apple-1", name = "Apple"))
+        val expected = createPlant()
+        plantDao.insertPlant(expected)
 
         val result = plantDao.getAllPlants().first()
         assertEquals(1, result.size)
-        assertEquals("apple-1", result[0].plantId)
-        assertEquals("Apple", result[0].name)
+        assertEquals(expected, result.single())
     }
 
     @Test
     fun getAllPlants_sortedByName() = runTest {
-        plantDao.insertPlant(createPlant(plantId = "plant-3", name = "Cherry"))
-        plantDao.insertPlant(createPlant(plantId = "plant-1", name = "Apple"))
-        plantDao.insertPlant(createPlant(plantId = "plant-2", name = "Banana"))
+        plantDao.insertPlant(createPlant(plantId = "coriandrum-sativum", name = "Cilantro"))
+        plantDao.insertPlant(createPlant(plantId = "malus-pumila", name = "Apple"))
+        plantDao.insertPlant(createPlant(plantId = "beta-vulgaris", name = "Beet"))
 
         val result = plantDao.getAllPlants().first()
-        assertEquals(listOf("Apple", "Banana", "Cherry"), result.map { it.name })
+        val expected = listOf(
+            createPlant(plantId = "malus-pumila", name = "Apple"),
+            createPlant(plantId = "beta-vulgaris", name = "Beet"),
+            createPlant(plantId = "coriandrum-sativum", name = "Cilantro"),
+        )
+
+        assertEquals(expected, result)
     }
 
     @Test
     fun conflict_replaceWorks() = runTest {
-        plantDao.insertPlant(createPlant(plantId = "plant-1", name = "Apple", wateringInterval = 7))
+        val initial = createPlant(plantId = "malus-pumila", name = "Apple", wateringInterval = 7,)
+        val expected = createPlant(plantId = "malus-pumila", name = "Red Apple", wateringInterval = 10,)
 
-        plantDao.insertPlant(createPlant(plantId = "plant-1", name = "Red Apple", wateringInterval = 10))
+        plantDao.insertPlant(initial)
+        plantDao.insertPlant(expected)
 
         val result = plantDao.getAllPlants().first()
         assertEquals(1, result.size)
-        assertEquals("Red Apple", result[0].name)
-        assertEquals(10, result[0].wateringInterval)
+        assertEquals(expected, result.single())
     }
 }
