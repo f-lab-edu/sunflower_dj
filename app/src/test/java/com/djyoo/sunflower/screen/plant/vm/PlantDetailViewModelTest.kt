@@ -5,6 +5,7 @@ import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import com.djyoo.sunflower.testutil.MainDispatcherRule
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,6 +61,32 @@ class PlantDetailViewModelTest {
 
         // 반환값이 없으면 plant StateFlow 도 null 이어야 한다.
         assertEquals(null, viewModel.plant.value)
+    }
+
+    @Test
+    fun onAddToGardenClicked_calledTwice_whileInProgress_callsRepositoryOnlyOnce() = runTest {
+        // given
+        val plant = Plant(
+            plantId = "malus-pumila",
+            name = "Apple",
+            description = "desc",
+            growZoneNumber = 3,
+            wateringInterval = 30,
+            imageUrl = "https://example.com/apple.jpg",
+        )
+        coEvery { repository.getPlantById("malus-pumila") } returns plant
+        coEvery { gardenRepository.addPlantToGarden(plant) } returns Unit
+
+        val viewModel = PlantDetailViewModel(repository, gardenRepository, "malus-pumila")
+        advanceUntilIdle() // plant 로드 완료
+
+        // when: 연속으로 두 번 클릭
+        viewModel.onAddToGardenClicked()
+        viewModel.onAddToGardenClicked()
+        advanceUntilIdle()
+
+        // then: addPlantToGarden 은 한 번만 호출되어야 한다 (연타 방지)
+        coVerify(exactly = 1) { gardenRepository.addPlantToGarden(plant) }
     }
 }
 

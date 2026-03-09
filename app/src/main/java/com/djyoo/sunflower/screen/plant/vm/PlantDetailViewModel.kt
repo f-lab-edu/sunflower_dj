@@ -7,8 +7,8 @@ import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +33,9 @@ class PlantDetailViewModel(
             initialValue = false,
         )
 
+    private val _isAddingToGarden = MutableStateFlow(false)
+    val isAddingToGarden: StateFlow<Boolean> = _isAddingToGarden.asStateFlow()
+
     private val _shareEvent = MutableSharedFlow<String>()
     val shareEvent: SharedFlow<String> = _shareEvent.asSharedFlow()
 
@@ -52,9 +55,15 @@ class PlantDetailViewModel(
 
     fun onAddToGardenClicked() {
         val plant = _plant.value ?: return
+        if (_isAddingToGarden.value) return
+        _isAddingToGarden.value = true
         viewModelScope.launch {
-            gardenRepository.addPlantToGarden(plant)
-            _addedToGardenEvent.emit(Unit)
+            try {
+                gardenRepository.addPlantToGarden(plant)
+                _addedToGardenEvent.emit(Unit)
+            } finally {
+                _isAddingToGarden.value = false
+            }
         }
     }
 

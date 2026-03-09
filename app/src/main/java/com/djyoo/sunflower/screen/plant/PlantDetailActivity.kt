@@ -97,6 +97,7 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
                 launch { detailViewModel.isPlantInGarden.collect { isPlantInGarden = it } }
                 launch { detailViewModel.shareEvent.collect(::handleShareEvent) }
                 launch { detailViewModel.addedToGardenEvent.collect { handleAddedToGarden() } }
+                launch { detailViewModel.isAddingToGarden.collect(::handleAddingToGardenState) }
             }
         }
     }
@@ -118,6 +119,10 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
 
     private fun handleAddedToGarden() {
         Snackbar.make(binding.root, getString(R.string.added_plant_to_garden), Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun handleAddingToGardenState(isAdding: Boolean) {
+        binding.detailAddButton.isEnabled = !isAdding
     }
 
     private fun handleShareEvent(plantName: String) {
