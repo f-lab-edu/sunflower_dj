@@ -12,6 +12,7 @@
 
     <string name="your_garden_is_empty">Your garden is empty</string>
     <string name="add_plant">Add plant</string>
-
+    <string name="added_plant_to_garden">Added plant to garden</string>
+    <string name="garden_watering_message">water in %1$d days.</string>
 
 </resources>
