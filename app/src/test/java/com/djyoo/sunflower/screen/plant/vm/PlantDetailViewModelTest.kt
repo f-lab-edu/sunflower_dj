@@ -9,7 +9,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -75,18 +77,29 @@ class PlantDetailViewModelTest {
             imageUrl = "https://example.com/apple.jpg",
         )
         coEvery { repository.getPlantById("malus-pumila") } returns plant
-        coEvery { gardenRepository.addPlantToGarden(plant) } returns Unit
+        coEvery { gardenRepository.addPlantToGarden(plant) } coAnswers {
+            delay(500)
+            Unit
+        }
 
         val viewModel = PlantDetailViewModel(repository, gardenRepository, "malus-pumila")
         advanceUntilIdle() // plant 로드 완료
 
-        // when: 연속으로 두 번 클릭
+        // when: 첫 번째 클릭 후 아직 add 작업이 끝나지 않은 상태에서 두 번째 클릭
         viewModel.onAddToGardenClicked()
-        viewModel.onAddToGardenClicked()
+        advanceTimeBy(100)                    // t = 100ms, addPlantToGarden 진행 중
+
+        // 중간 상태: 추가 작업 플래그는 true 여야 한다.
+        assertEquals(true, viewModel.isAddingToGarden.value)
+
+        viewModel.onAddToGardenClicked()      // 진행 중일 때 두 번째 클릭
+
         advanceUntilIdle()
 
         // then: addPlantToGarden 은 한 번만 호출되어야 한다 (연타 방지)
         coVerify(exactly = 1) { gardenRepository.addPlantToGarden(plant) }
+        // 작업 완료 후 플래그는 다시 false 로 내려와야 한다.
+        assertEquals(false, viewModel.isAddingToGarden.value)
     }
 }
 
