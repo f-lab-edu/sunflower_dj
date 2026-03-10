@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.djyoo.sunflower.screen.main.MainTabItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 data class TabUiState(
     @StringRes val titleResId: Int,
@@ -39,6 +41,17 @@ class MainViewModel : ViewModel() {
         ),
     )
     val uiState: StateFlow<MainUiState> = _uiState
+
+    private val _growZoneFilter = MutableStateFlow<Int?>(null)
+    val growZoneFilter: StateFlow<Int?> = _growZoneFilter.asStateFlow()
+
+    fun onFilterIconClicked() {
+        _growZoneFilter.update { if (it == FILTER_GROW_ZONE) null else FILTER_GROW_ZONE }
+    }
+
+    private companion object {
+        const val FILTER_GROW_ZONE = 9
+    }
 
     fun onTabSelected(tab: MainTabItem) {
         val position = MainTabItem.entries.indexOf(tab).coerceAtLeast(0)

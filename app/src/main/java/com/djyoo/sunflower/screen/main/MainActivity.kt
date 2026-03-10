@@ -23,7 +23,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         super.onCreate(savedInstanceState)
 
         setupViewPager()
+        setupFilterIconClickListener()
         observeUiState()
+    }
+
+    private fun setupFilterIconClickListener() {
+        binding.filterIcon.setOnClickListener { mainViewModel.onFilterIconClicked() }
     }
 
     private fun setupViewPager() {
