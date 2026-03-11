@@ -3,6 +3,7 @@ package com.djyoo.sunflower.screen.plant
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,7 @@ import com.djyoo.sunflower.R
 import com.djyoo.sunflower.common.base.BaseFragment
 import com.djyoo.sunflower.common.widget.GridSpacingItemDecoration
 import com.djyoo.sunflower.databinding.FragmentPlantListBinding
+import com.djyoo.sunflower.screen.main.vm.MainViewModel
 import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import com.djyoo.sunflower.screen.plant.vm.PlantListViewModel
@@ -21,11 +23,13 @@ import kotlinx.coroutines.launch
 
 class PlantListFragment : BaseFragment<FragmentPlantListBinding>(R.layout.fragment_plant_list) {
 
+    private val mainViewModel: MainViewModel by activityViewModels()
+
     private val plantViewModel: PlantListViewModel by viewModels {
         viewModelFactory {
             initializer {
                 val repository = PlantRepository(requireContext().assets)
-                PlantListViewModel(repository)
+                PlantListViewModel(repository, mainViewModel.growZoneFilter)
             }
         }
     }
