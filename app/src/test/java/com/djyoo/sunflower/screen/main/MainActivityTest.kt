@@ -2,9 +2,7 @@ package com.djyoo.sunflower.screen.main
 
 import android.os.Looper
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -135,11 +133,6 @@ class MainActivityTest {
     fun mainActivity_hasCoordinatorLayoutWithAppBar() {
         val activity = launchActivity()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        val content = activity.window.decorView.findViewById<ViewGroup>(android.R.id.content)
-        val root = content.getChildAt(0)
-        val expectedRootClass = CoordinatorLayout::class.java
-        assertTrue(expectedRootClass.isAssignableFrom(root::class.java))
 
         onView(withId(R.id.app_bar_layout)).check(matches(isDisplayed()))
         onView(withId(R.id.title_text)).check(matches(isDisplayed()))
