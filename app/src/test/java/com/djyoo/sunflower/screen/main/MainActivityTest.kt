@@ -3,7 +3,6 @@ package com.djyoo.sunflower.screen.main
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.djyoo.sunflower.R
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import org.hamcrest.Matchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -131,7 +131,7 @@ class MainActivityTest {
 
     @Test
     fun mainActivity_hasCoordinatorLayoutWithAppBar() {
-        val activity = launchActivity()
+        launchActivity()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         onView(withId(R.id.app_bar_layout)).check(matches(isDisplayed()))
@@ -145,14 +145,10 @@ class MainActivityTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         val appBarLayout = activity.findViewById<AppBarLayout>(R.id.app_bar_layout)
-        val titleText = activity.findViewById<TextView>(R.id.title_text)
         appBarLayout.setExpanded(false, false)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // CI(headless)에서는 Espresso isDisplayed()가 환경 차이로 실패할 수 있어
-        // getGlobalVisibleRect 기반 검증 사용.
-        val rect = android.graphics.Rect()
-        assertFalse(titleText.getGlobalVisibleRect(rect))
+        onView(withId(R.id.title_text)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -161,12 +157,10 @@ class MainActivityTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         val appBarLayout = activity.findViewById<AppBarLayout>(R.id.app_bar_layout)
-        val titleText = activity.findViewById<TextView>(R.id.title_text)
         appBarLayout.setExpanded(true, false)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        val rect = android.graphics.Rect()
-        assertTrue(titleText.getGlobalVisibleRect(rect))
+        onView(withId(R.id.title_text)).check(matches(isDisplayed()))
     }
 }
 
