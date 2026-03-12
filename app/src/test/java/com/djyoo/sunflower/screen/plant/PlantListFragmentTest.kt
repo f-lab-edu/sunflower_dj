@@ -147,7 +147,7 @@ class PlantListFragmentTest {
         val adapter = recyclerView.adapter ?: error("RecyclerView adapter is null")
 
         Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
-        assertEquals("필터 해제 시 전체 목록 개수", fullPlantListSize, adapter.itemCount)
+        assertEquals(fullPlantListSize, adapter.itemCount)
     }
 }
 

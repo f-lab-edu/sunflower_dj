@@ -5,10 +5,15 @@ import android.view.View
 import android.widget.ImageView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.viewpager2.widget.ViewPager2
 import com.djyoo.sunflower.R
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import org.hamcrest.Matchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -112,6 +117,50 @@ class MainActivityTest {
         assertEquals(0, viewPager.currentItem)
         assertTrue(myGardenTab.isSelected)
         assertFalse(plantTab.isSelected)
+    }
+
+    @Test
+    fun titleBar_onLaunch_isVisibleAndShowsSunflower() {
+        launchActivity()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        val expectedTitle = "Sunflower"
+        onView(withId(R.id.title_text)).check(matches(withText(expectedTitle)))
+        onView(withId(R.id.title_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun mainActivity_hasCoordinatorLayoutWithAppBar() {
+        launchActivity()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withId(R.id.app_bar_layout)).check(matches(isDisplayed()))
+        onView(withId(R.id.title_text)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_pager)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun appBar_whenSetExpandedFalse_titleNotVisible() {
+        val activity = launchActivity()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        val appBarLayout = activity.findViewById<AppBarLayout>(R.id.app_bar_layout)
+        appBarLayout.setExpanded(false, false)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withId(R.id.title_text)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun appBar_whenSetExpandedTrue_titleVisible() {
+        val activity = launchActivity()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        val appBarLayout = activity.findViewById<AppBarLayout>(R.id.app_bar_layout)
+        appBarLayout.setExpanded(true, false)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withId(R.id.title_text)).check(matches(isDisplayed()))
     }
 }
 
