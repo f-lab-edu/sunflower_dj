@@ -9,20 +9,20 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- 다크 모드: 액티비티 배경 검은색 -->
         <item name="android:windowBackground">@color/color_121212</item>
         <!-- Status bar: edge-to-edge로 액티비티 배경이 보이도록 투명 처리 -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <!-- 다크 배경이므로 status bar 아이콘/텍스트를 밝은 색(흰색)으로 표시 -->
         <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- Plant detail AppBar: 다크 모드 → 밝은 아이콘 -->
     <style name="ThemeOverlay.Sunflower.PlantDetail.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <!-- SplashScreen API용 런처 테마 (다크 모드) -->
+    <style name="ThemeOverlay.Sunflower.Main.AppBar" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorPrimary">@color/main_app_bar_bg</item>
+    </style>
+
     <style name="Theme.Sunflower.Splash" parent="Theme.Sunflower">
         <item name="windowSplashScreenBackground">@color/color_121212</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>

@@ -15,4 +15,6 @@
     <string name="added_plant_to_garden">Added plant to garden</string>
     <string name="garden_watering_message">water in %1$d days.</string>
 
+    <string name="title_photos_by_unsplash">Photos by Unsplash</string>
+    <string name="error_search_photos">Failed to load photos</string>
 </resources>
