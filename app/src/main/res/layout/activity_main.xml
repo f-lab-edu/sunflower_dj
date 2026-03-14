@@ -12,8 +12,9 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/main_app_bar_bg"
             android:fitsSystemWindows="false"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+            android:theme="@style/ThemeOverlay.Sunflower.Main.AppBar">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
@@ -49,10 +50,11 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:background="@drawable/tab_background"
+                android:background="@color/main_tab_bg"
                 android:fillViewport="true"
                 app:tabIndicatorColor="@color/color_4caf50"
-                app:tabIndicatorHeight="4dp" />
+                app:tabIndicatorHeight="4dp"
+                app:tabTextColor="?attr/colorOnSurface" />
 
             <View
                 android:layout_width="match_parent"

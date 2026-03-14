@@ -2,6 +2,7 @@ package com.djyoo.sunflower.screen.plant.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.djyoo.sunflower.BuildConfig
 import com.djyoo.sunflower.screen.garden.data.repository.GardenRepository
 import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
@@ -42,6 +43,10 @@ class PlantDetailViewModel(
     private val _addedToGardenEvent = MutableSharedFlow<Unit>()
     val addedToGardenEvent: SharedFlow<Unit> = _addedToGardenEvent.asSharedFlow()
 
+    /** SearchPhotosActivity로 이동할 때 사용할 검색어(식물 이름)를 전달한다. */
+    private val _navigateToSearchPhotosEvent = MutableSharedFlow<String>()
+    val navigateToSearchPhotosEvent: SharedFlow<String> = _navigateToSearchPhotosEvent.asSharedFlow()
+
     init {
         loadPlant()
     }
@@ -50,6 +55,16 @@ class PlantDetailViewModel(
         val plant = _plant.value ?: return
         viewModelScope.launch {
             _shareEvent.emit(plant.name)
+        }
+    }
+
+    fun hasValidUnsplashKey(): Boolean = (BuildConfig.UNSPLASH_ACCESS_KEY != "null")
+
+    /** 사진 검색(Unsplash) 아이콘 클릭 시, 현재 식물 이름으로 검색 화면 이동 이벤트를 발생시킨다. */
+    fun onSearchPhotosClicked() {
+        val plant = _plant.value ?: return
+        viewModelScope.launch {
+            _navigateToSearchPhotosEvent.emit(plant.name)
         }
     }
 

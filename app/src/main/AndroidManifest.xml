@@ -28,6 +28,10 @@
         <activity
             android:name=".screen.plant.PlantDetailActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".screen.search.SearchPhotosActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
