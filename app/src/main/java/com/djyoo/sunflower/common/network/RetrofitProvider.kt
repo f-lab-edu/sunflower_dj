@@ -1,13 +1,13 @@
 package com.djyoo.sunflower.common.network
 
 import android.util.Log
+import com.djyoo.sunflower.BuildConfig
+import com.djyoo.sunflower.common.gson.GsonProvider
 import com.djyoo.sunflower.common.network.RetrofitProvider.LOG_TAG
 import com.djyoo.sunflower.common.network.RetrofitProvider.create
-import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
@@ -26,8 +26,6 @@ object RetrofitProvider {
     /** 요청/응답 헤더 라인 패턴 (헤더는 로그에서 제외) */
     private val headerLineRegex = Regex("^[A-Za-z][A-Za-z0-9-]*:\\s.*")
 
-    private val gson = GsonBuilder().create()
-
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
         message.lineSequence()
             .filterNot { line -> headerLineRegex.matches(line.trim()) }
@@ -37,7 +35,11 @@ object RetrofitProvider {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
+        .apply {
+            if (BuildConfig.DEBUG) {
+                addInterceptor(loggingInterceptor)
+            }
+        }
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
@@ -50,6 +52,6 @@ object RetrofitProvider {
     fun create(): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addConverterFactory(GsonProvider.gsonConverterFactory)
         .build()
 }

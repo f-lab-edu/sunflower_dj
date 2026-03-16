@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.ktlint)
@@ -103,5 +105,9 @@ dependencies {
 }
 
 fun getUnsplashAccess(): String? {
-    return project.findProperty("unsplash_access_key") as? String
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (!localPropertiesFile.exists()) return null
+    val localProperties = Properties()
+    localProperties.load(localPropertiesFile.inputStream())
+    return localProperties.getProperty("unsplash_access_key")
 }

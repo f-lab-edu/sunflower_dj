@@ -1,5 +1,6 @@
 package com.djyoo.sunflower.screen.search.data.api
 
+import com.djyoo.sunflower.BuildConfig
 import com.djyoo.sunflower.screen.search.data.model.UnsplashSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -15,6 +16,6 @@ interface UnsplashApi {
         @Query("query") query: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
-        @Query("client_id") clientId: String = "v5OyabaPl_tUJkeWr3AD5rHtX_KeSX1movJJgjiIQLo",
+        @Query("client_id") clientId: String = BuildConfig.UNSPLASH_ACCESS_KEY,
     ): UnsplashSearchResponse
 }

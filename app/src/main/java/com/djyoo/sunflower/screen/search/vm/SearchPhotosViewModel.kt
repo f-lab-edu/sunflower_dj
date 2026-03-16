@@ -31,9 +31,10 @@ class SearchPhotosViewModel(
     private val accumulatedResults = mutableListOf<UnsplashSearchResponse>()
 
     /**
+     * View에서 검색을 요청했을 때 호출되는 진입점.
      * 검색어를 갱신하고 1페이지부터 새로 검색한다.
      */
-    fun search(query: String) {
+    fun onSearchRequested(query: String) {
         if (query.isBlank()) return
         _query.value = query
         currentPage = 1
@@ -43,12 +44,34 @@ class SearchPhotosViewModel(
     }
 
     /**
+     * View에서 추가 로드를 요청했을 때 호출되는 진입점.
      * 다음 페이지를 불러와 기존 결과에 이어붙인다.
+     * 이미 추가 로딩 중이거나 마지막 페이지에 도달한 경우에는 아무 것도 하지 않는다.
      */
-    fun loadMore() {
+    fun onLoadMoreRequested() {
         if (currentPage >= totalPages) return
         if (_searchResult.value is SearchPhotosUiState.Loading) return
+        if (_isLoadingMore.value) return
         loadPage(currentPage + 1, append = true)
+    }
+
+    /**
+     * 리스트가 스크롤될 때 View에서 호출하는 진입점.
+     * 스크롤 위치와 전체 아이템 수만 전달하고, 실제 로딩 여부 판단은 ViewModel 이 담당한다.
+     */
+    fun onListScrolled(lastVisibleItemPosition: Int, totalItemCount: Int) {
+        if (totalItemCount <= 0) return
+        if (shouldLoadMore(lastVisibleItemPosition, totalItemCount)) {
+            onLoadMoreRequested()
+        }
+    }
+
+    private fun shouldLoadMore(lastVisibleItemPosition: Int, totalItemCount: Int): Boolean {
+        if (currentPage >= totalPages) return false
+        if (_searchResult.value is SearchPhotosUiState.Loading) return false
+        if (_isLoadingMore.value) return false
+
+        return lastVisibleItemPosition >= totalItemCount - PAGINATION_TRIGGER_OFFSET
     }
 
     private fun loadPage(page: Int, append: Boolean) {
@@ -93,5 +116,8 @@ class SearchPhotosViewModel(
 
         /** 이후 페이지당 요청 개수 */
         const val PAGE_SIZE = 25
+
+        /** 페이징 트리거 오프셋 (마지막 N개 남았을 때 추가 로드) */
+        const val PAGINATION_TRIGGER_OFFSET = 4
     }
 }

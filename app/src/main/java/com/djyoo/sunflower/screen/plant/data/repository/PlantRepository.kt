@@ -1,8 +1,8 @@
 package com.djyoo.sunflower.screen.plant.data.repository
 
 import android.content.res.AssetManager
+import com.djyoo.sunflower.common.gson.GsonProvider
 import com.djyoo.sunflower.screen.plant.data.model.Plant
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -11,7 +11,6 @@ import kotlinx.coroutines.withContext
  */
 class PlantRepository(
     private val assetManager: AssetManager,
-    private val gson: Gson = Gson(),
 ) {
 
     /**
@@ -36,7 +35,7 @@ class PlantRepository(
 
     private fun parsePlantList(jsonString: String): List<Plant> {
         val typeToken = object : com.google.gson.reflect.TypeToken<List<Plant>>() {}
-        return gson.fromJson(jsonString, typeToken.type) ?: emptyList()
+        return GsonProvider.gson.fromJson(jsonString, typeToken.type) ?: emptyList()
     }
 
     private companion object {

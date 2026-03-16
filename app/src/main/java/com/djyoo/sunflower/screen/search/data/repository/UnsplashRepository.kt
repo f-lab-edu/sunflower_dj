@@ -18,16 +18,13 @@ class UnsplashRepository(
         query: String,
         page: Int = 1,
         perPage: Int = 25,
-        clientId: String = DEFAULT_CLIENT_ID,
     ): Result<UnsplashSearchResponse> = withContext(Dispatchers.IO) {
         runCatching {
-            api.searchPhotos(query = query, page = page, perPage = perPage, clientId = clientId)
+            api.searchPhotos(query = query, page = page, perPage = perPage)
         }
     }
 
     private companion object {
-        const val DEFAULT_CLIENT_ID = "v5OyabaPl_tUJkeWr3AD5rHtX_KeSX1movJJgjiIQLo"
-
         fun createApi(): UnsplashApi =
             RetrofitProvider.create().create(UnsplashApi::class.java)
     }
