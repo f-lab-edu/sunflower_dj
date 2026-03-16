@@ -4,13 +4,19 @@ import android.widget.ImageView
 import com.djyoo.sunflower.common.image.ImageLoader
 
 class FakeImageLoader : ImageLoader {
-    private var onLoaded: (() -> Unit)? = null
+    private var callback: (() -> Unit)? = null
+    private var loaded = false
 
     override fun load(url: String, imageView: ImageView, onLoaded: () -> Unit) {
-        this.onLoaded = onLoaded
+        callback = onLoaded
+
+        if (loaded) {
+            onLoaded()
+        }
     }
 
     fun triggerLoaded() {
-        onLoaded?.invoke()
+        loaded = true
+        callback?.invoke()
     }
 }
