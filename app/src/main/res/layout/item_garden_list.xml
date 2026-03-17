@@ -11,7 +11,7 @@
         <com.djyoo.sunflower.common.widget.CustomRoundLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_434E3E"
+            android:background="@color/item_card_bg"
             app:bottom_left_corner_radius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -43,7 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textColor="@color/color_BFC4B9"
+                        android:textColor="@color/item_card_text"
                         android:textSize="18dp"
                         android:textStyle="bold"
                         tools:text="Cilantro" />
@@ -55,7 +55,7 @@
                         android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="Planted"
-                        android:textColor="@color/color_BFC4B9"
+                        android:textColor="@color/item_card_text"
                         android:textSize="14dp"
                         android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:gravity="center"
-                        android:textColor="@color/color_BFC4B9"
+                        android:textColor="@color/item_card_text"
                         android:textSize="14dp"
                         tools:text="Mar 9, 2026" />
 
@@ -76,7 +76,7 @@
                         android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="Last Watered"
-                        android:textColor="@color/color_BFC4B9"
+                        android:textColor="@color/item_card_text"
                         android:textSize="14dp"
                         android:textStyle="bold" />
 
@@ -86,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:gravity="center"
-                        android:textColor="@color/color_BFC4B9"
+                        android:textColor="@color/item_card_text"
                         android:textSize="14dp"
                         tools:text="Mar 9, 2026" />
 
@@ -97,7 +97,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="4dp"
                         android:gravity="center"
-                        android:textColor="@color/color_BFC4B9"
+                        android:textColor="@color/item_card_text"
                         android:textSize="14dp"
                         tools:text="water in 2 days." />
                 </LinearLayout>

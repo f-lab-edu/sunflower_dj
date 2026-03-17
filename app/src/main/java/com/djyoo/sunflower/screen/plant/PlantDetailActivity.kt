@@ -23,6 +23,7 @@ import com.djyoo.sunflower.screen.garden.data.repository.GardenRepository
 import com.djyoo.sunflower.screen.plant.data.model.Plant
 import com.djyoo.sunflower.screen.plant.data.repository.PlantRepository
 import com.djyoo.sunflower.screen.plant.vm.PlantDetailViewModel
+import com.djyoo.sunflower.screen.search.SearchPhotosActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -91,12 +92,18 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
             detailViewModel.onAddToGardenClicked()
         }
 
+        binding.detailSearchPhotosIcon.setOnClickListener {
+            detailViewModel.onSearchPhotosClicked()
+        }
+        binding.detailSearchPhotosIcon.isVisible = detailViewModel.hasValidUnsplashKey()
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch { detailViewModel.plant.collect(::handlePlantState) }
                 launch { detailViewModel.isPlantInGarden.collect { isPlantInGarden = it } }
                 launch { detailViewModel.shareEvent.collect(::handleShareEvent) }
                 launch { detailViewModel.addedToGardenEvent.collect { handleAddedToGarden() } }
+                launch { detailViewModel.navigateToSearchPhotosEvent.collect(::handleNavigateToSearchPhotos) }
                 launch { detailViewModel.isAddingToGarden.collect(::handleAddingToGardenState) }
             }
         }
@@ -123,6 +130,14 @@ class PlantDetailActivity : BaseActivity<ActivityPlantDetailBinding>(R.layout.ac
 
     private fun handleAddingToGardenState(isAdding: Boolean) {
         binding.detailAddButton.isEnabled = !isAdding
+    }
+
+    private fun handleNavigateToSearchPhotos(searchQuery: String) {
+        startActivity(
+            Intent(this, SearchPhotosActivity::class.java).apply {
+                putExtra(SearchPhotosActivity.EXTRA_QUERY, searchQuery)
+            },
+        )
     }
 
     private fun handleShareEvent(plantName: String) {

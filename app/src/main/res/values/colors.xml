@@ -24,8 +24,19 @@
     <color name="color_BFC4B9">#BFC4B9</color>
     <color name="color_434E3E">#434E3E</color>
 
-    <!-- Plant detail: 라이트 모드 -->
     <color name="plant_detail_bg">#FFFFFF</color>
     <color name="plant_detail_text">#000000</color>
     <color name="plant_detail_secondary">#616161</color>
+
+    <color name="search_photos_toolbar_bg">#FFFFFF</color>
+    <color name="search_photos_toolbar_content">#000000</color>
+    <color name="search_photos_swipe_progress_bg">#E0E0E0</color>
+    <color name="search_photos_swipe_progress_scheme">#000000</color>
+    <color name="search_photos_progress_tint">#000000</color>
+
+    <color name="main_app_bar_bg">#FFFFFF</color>
+    <color name="main_tab_bg">#FFFFFF</color>
+
+    <color name="item_card_bg">#C5DBC5</color>
+    <color name="item_card_text">#212121</color>
 </resources>

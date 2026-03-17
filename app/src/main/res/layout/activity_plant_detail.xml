@@ -98,24 +98,46 @@
                     android:textSize="28dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/detail_watering_label"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginTop="16dp"
-                    android:text="@string/watering_needs"
-                    android:textColor="@color/plant_detail_text"
-                    android:textSize="14dp" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/detail_watering_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/plant_detail_secondary"
-                    android:textSize="14dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/detail_watering_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/watering_needs"
+                            android:textColor="@color/plant_detail_text"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/detail_watering_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/plant_detail_secondary"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/detail_search_photos_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_photo_library"
+                        android:tint="@color/plant_detail_text"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/detail_description"
