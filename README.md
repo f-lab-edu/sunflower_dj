@@ -156,15 +156,6 @@ MVVM + Coroutines + Flow 기반으로
 
 ---
 ### 데이터 흐름
-
-```
-View → ViewModel → Repository → (API / Room DB)
-                         ↓
-                   StateFlow
-                         ↓
-                       View
-```
-
 ---
 
 ```mermaid
@@ -315,47 +306,6 @@ unsplash_access_key=YOUR_UNSPLASH_ACCESS_KEY
 
 ---
 
-## 🧪 테스트 (Testing)
-
-### 🎯 테스트 전략
-
-UI, 비동기 로직, 네트워크 경계에서 발생할 수 있는 문제를 방지하기 위해  
-레이어별 테스트를 분리하고, ViewModel 중심 상태 기반 테스트를 구성했습니다.
-
----
-
-### 🔍 주요 테스트 시나리오
-
-#### 1. SearchPhotosViewModelTest
-
-- 검색 성공/실패 시 `SearchPhotosUiState` 상태 전이 검증
-
-페이징 로직:
-
-- 다음 페이지가 존재할 때만 추가 로드
-- `onLoadMoreRequested` 연속 호출 시에도 단일 네트워크 요청만 수행
-- 로딩 상태 (`isLoadingMore`)의 정확한 전이 검증
-
----
-
-#### 2. SearchPhotosActivityTest
-
-- `EXTRA_QUERY`로 Activity 실행 시
-- ViewModel이 (mock된 Repository를 통해) API 호출 수행
-- RecyclerView에 사용자 정보 및 이미지가 정상적으로 표시되는지 검증
-
----
-
-#### 3. PlantListFragmentTest
-
-- Grow zone 필터 on/off 시 데이터 일관성 검증
-  - zone 9 적용 시: 4개
-  - 해제 시: 전체 17개 복원
-
-- `waitForAdapterUpdate` 유틸을 사용하여  
-  비동기 로딩으로 인한 flaky 테스트 최소화
-
----
 ## 📜 Attribution
 
 이 앱은 Unsplash API를 사용하여 이미지를 검색합니다.  
